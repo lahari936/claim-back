@@ -1,26 +1,131 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
+@custom-variant dark (&:is(.dark *));
+
+/* Paper and ink: warm off-white page, navy ink, deep teal accent. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  --radius: 0.625rem;
+  --background: oklch(0.985 0.006 85);
+  --foreground: oklch(0.24 0.03 255);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.24 0.03 255);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.24 0.03 255);
+  --primary: oklch(0.42 0.08 200);
+  --primary-foreground: oklch(0.985 0.006 85);
+  --secondary: oklch(0.95 0.01 85);
+  --secondary-foreground: oklch(0.3 0.03 255);
+  --muted: oklch(0.95 0.008 85);
+  --muted-foreground: oklch(0.5 0.02 255);
+  --accent: oklch(0.94 0.02 200);
+  --accent-foreground: oklch(0.3 0.06 200);
+  --destructive: oklch(0.55 0.2 27);
+  --border: oklch(0.9 0.01 85);
+  --input: oklch(0.88 0.01 85);
+  --ring: oklch(0.55 0.08 200);
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --contestable: oklch(0.48 0.11 165);
+  --contestable-soft: oklch(0.95 0.04 165);
+  --unclear: oklch(0.6 0.13 70);
+  --unclear-soft: oklch(0.96 0.05 85);
+  --valid: oklch(0.45 0.03 255);
+  --valid-soft: oklch(0.94 0.01 255);
+  --flag: oklch(0.55 0.2 27);
+  --flag-soft: oklch(0.95 0.04 27);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: oklch(0.18 0.015 255);
+    --foreground: oklch(0.93 0.01 85);
+    --card: oklch(0.22 0.018 255);
+    --card-foreground: oklch(0.93 0.01 85);
+    --popover: oklch(0.22 0.018 255);
+    --popover-foreground: oklch(0.93 0.01 85);
+    --primary: oklch(0.72 0.1 195);
+    --primary-foreground: oklch(0.18 0.015 255);
+    --secondary: oklch(0.27 0.02 255);
+    --secondary-foreground: oklch(0.93 0.01 85);
+    --muted: oklch(0.26 0.018 255);
+    --muted-foreground: oklch(0.7 0.015 255);
+    --accent: oklch(0.3 0.04 200);
+    --accent-foreground: oklch(0.9 0.04 195);
+    --border: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 15%);
+    --ring: oklch(0.6 0.08 200);
+
+    --contestable: oklch(0.75 0.12 165);
+    --contestable-soft: oklch(0.3 0.05 165);
+    --unclear: oklch(0.8 0.13 80);
+    --unclear-soft: oklch(0.32 0.05 80);
+    --valid: oklch(0.78 0.02 255);
+    --valid-soft: oklch(0.3 0.02 255);
+    --flag: oklch(0.72 0.17 27);
+    --flag-soft: oklch(0.32 0.07 27);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-serif);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-contestable: var(--contestable);
+  --color-contestable-soft: var(--contestable-soft);
+  --color-unclear: var(--unclear);
+  --color-unclear-soft: var(--unclear-soft);
+  --color-valid: var(--valid);
+  --color-valid-soft: var(--valid-soft);
+  --color-flag: var(--flag);
+  --color-flag-soft: var(--flag-soft);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+}
+
+/* Verifier flags and clause links inside draft/verdict text */
+.flag {
+  background: var(--flag-soft);
+  color: var(--flag);
+  border-bottom: 2px solid var(--flag);
+  border-radius: 2px;
+  padding: 0 2px;
+}
+.clause-link {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.clause-link:hover {
+  text-decoration-style: solid;
 }

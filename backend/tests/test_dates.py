@@ -41,3 +41,13 @@ def test_case_c_waiting_period_running():
     assert d.waiting_period_ends == date(2027, 11, 1)
     assert d.waiting_period_over is False
     assert d.days_policy_to_admission == 277
+
+
+def test_tracker_clocks_start_at_grievance():
+    from app.domain.dates import tracker
+    today = date(2026, 10, 20)
+    before = {s.stage: s for s in tracker({}, today)}
+    assert before["grievance"].open and not before["bima_bharosa"].open and before["ombudsman"].opens_on is None
+    after = {s.stage: s for s in tracker({"grievance": date(2026, 10, 1)}, today)}
+    assert after["bima_bharosa"].opens_on == date(2026, 10, 15) and after["bima_bharosa"].open
+    assert after["ombudsman"].opens_on == date(2026, 10, 31) and not after["ombudsman"].open

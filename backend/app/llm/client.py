@@ -58,7 +58,7 @@ def call_json(tier: str, system: str, user: str, schema: type[BaseModel], case_i
     raise RuntimeError("LLM output invalid after retry")
 
 
-def transcribe_image(png: bytes, case_id: str | None) -> str:
+def transcribe_image(image: bytes, case_id: str | None, mime: str = "image/png") -> str:
     # /no_think: with thinking on, the Omni model loops on long transcriptions.
     r = client.chat.completions.create(
         model=MODELS["vision"],
@@ -66,7 +66,7 @@ def transcribe_image(png: bytes, case_id: str | None) -> str:
                   {"role": "user", "content": [
                       {"type": "text", "text": "Transcribe all text in this image exactly, keeping line breaks. "
                                                "Output only the text."},
-                      {"type": "image_url", "image_url": {"url": "data:image/png;base64," + base64.b64encode(png).decode()}},
+                      {"type": "image_url", "image_url": {"url": f"data:{mime};base64," + base64.b64encode(image).decode()}},
                   ]}],
         temperature=0.2,
         max_tokens=4000,

@@ -62,7 +62,9 @@ VERDICT = ("You are reviewing an insurer's claim rejection for the policyholder.
            "(outcome likely_valid). Do not give medical advice. clause_ids and source_ids must be ids from the "
            "input. Each reason must cite a clause number or a fact. Cite a source_id only if its excerpt directly "
            "supports a reason; an unrelated product brochure or policy is not support, so leave source_ids empty "
-           "rather than stretch. missing_documents: papers that would strengthen the case.")
+           "rather than stretch. missing_documents: papers that would strengthen the case. Reasons are shown to the "
+           "policyholder: write dates like 10 June 2026 and never mention JSON field names such as computed_dates "
+           "or clause_id.")
 
 
 def verdict(case_id: str, ctx: str) -> Verdict:

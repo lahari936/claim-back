@@ -3,6 +3,7 @@
 Every insurer, person, number and clause here is invented. Re-run to regenerate:
     python scripts/make_samples.py
 """
+import shutil
 from pathlib import Path
 
 import pymupdf as fitz
@@ -201,6 +202,8 @@ def main():
             (d / "_tmp.pdf").unlink()
         else:
             write_pdf(d / "discharge_summary.pdf", files["discharge"])
+    # Same files served by the frontend for the "Try a sample case" buttons.
+    shutil.copytree(OUT, OUT.parents[1] / "frontend" / "public" / "samples", dirs_exist_ok=True)
     print("wrote", OUT)
 
 

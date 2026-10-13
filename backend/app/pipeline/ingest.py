@@ -9,8 +9,10 @@ MIN_CHARS_PER_PAGE = 50  # below this a PDF page is treated as a scan
 
 
 def ingest(path: Path, case_id: str | None) -> str:
-    if path.suffix.lower() != ".pdf":
-        return transcribe_image(path.read_bytes(), case_id)
+    suffix = path.suffix.lower()
+    if suffix != ".pdf":
+        mime = "image/jpeg" if suffix in (".jpg", ".jpeg") else f"image/{suffix[1:]}"
+        return transcribe_image(path.read_bytes(), case_id, mime)
     pages = []
     with pymupdf.open(path) as doc:
         for page in doc:

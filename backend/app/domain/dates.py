@@ -61,3 +61,26 @@ def compute_dates(policy_start: date, admission: date, waiting_clause_text: str 
         history_onsets=onsets,
         history_onset_before_policy={h: (o < policy_start if o else None) for h, o in onsets.items()},
     )
+
+
+# Escalation ladder: days after the grievance is filed before each next stage opens.
+# 14 days: insurer's grievance turnaround (policy clause 6.2 / IRDAI). 30 days: Insurance Ombudsman Rules 2017
+# allow a complaint when the insurer rejects or does not reply within one month.
+ESCALATION = [("grievance", 0), ("bima_bharosa", 14), ("ombudsman", 30)]
+
+
+class TrackerStep(BaseModel):
+    stage: str
+    filed_on: date | None
+    opens_on: date | None  # None until the grievance is filed (it starts every clock)
+    open: bool
+
+
+def tracker(filed: dict[str, date], today: date) -> list[TrackerStep]:
+    g = filed.get("grievance")
+    steps = []
+    for stage, wait in ESCALATION:
+        opens = (g + timedelta(days=wait) if g else None) if wait else today
+        steps.append(TrackerStep(stage=stage, filed_on=filed.get(stage), opens_on=opens,
+                                 open=opens is not None and today >= opens))
+    return steps
