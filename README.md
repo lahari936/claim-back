@@ -74,12 +74,13 @@ Two things we learned about these models:
 | Case | Rejection | Expected | Got | Pack |
 | --- | --- | --- | --- | --- |
 | A | Pre-existing; history began 1 year before admission, after the 2023 policy start | contestable | contestable (high) | 3 drafts, 0 verify issues |
-| B | Waiting period; 24 months ended 15 May 2025, admission July 2026 | contestable | contestable | 3 drafts, 0 verify issues |
-| C | Waiting period; 277 days covered of 24 months | likely valid | likely valid | none, with reason |
+| B | Waiting period; 24 months ended 15 May 2025, admission July 2026 | contestable | contestable (high) | 3 drafts, 0 verify issues |
+| C | Waiting period; 277 days covered of 24 months | likely valid | likely valid (high) | none, with reason |
 | D | Not medically necessary; discharge summary is a photo, platelet transfusion given | contestable | contestable (medium) | 3 drafts, 0 verify issues |
 
-A full case takes about 11 model calls and 25k tokens. On NVIDIA's free tier a case took about 5 minutes end to end,
-mostly the Ultra model.
+A case takes 10–12 model calls and 18–26k tokens. On NVIDIA's free tier a case took 3–5 minutes end to end, mostly
+the Ultra model. Full table: [docs/results.md](docs/results.md), regenerated with `python ../scripts/measure.py` from
+`backend/`.
 
 All fixtures in `samples/claimback/` are synthetic: an invented insurer, people, numbers and policy wording.
 
