@@ -5,7 +5,8 @@ services:
       POSTGRES_USER: claimback
       POSTGRES_PASSWORD: claimback
       POSTGRES_DB: claimback
-    ports: ["5432:5432"]
+    # 55432 on the host: 5432/5433 are often taken by local Postgres installs
+    ports: ["55432:5432"]
     volumes: [pgdata:/var/lib/postgresql/data]
 volumes:
   pgdata:

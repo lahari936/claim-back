@@ -11,4 +11,6 @@ docker compose up -d db         # Postgres + pgvector
 cd backend && pip install -r requirements.txt && uvicorn app.main:app --reload
 cd frontend && npm install && npm run dev
 python scripts/smoke_models.py  # check every model responds
+python scripts/make_samples.py  # regenerate synthetic fixtures
+cd backend && python -m pytest  # LLM tests skip without a key
 ```
