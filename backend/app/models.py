@@ -9,7 +9,7 @@ from typing import Literal
 from dotenv import load_dotenv
 from pgvector.sqlalchemy import Vector
 from pydantic import BaseModel, field_validator
-from sqlalchemy import DateTime, Float, ForeignKey, Integer, String, Text, create_engine, func, text
+from sqlalchemy import JSON, DateTime, Float, ForeignKey, Integer, String, Text, create_engine, func, text
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
 
 load_dotenv(Path(__file__).resolve().parents[2] / ".env")
@@ -81,6 +81,16 @@ class Verdict(BaseModel):
     missing_documents: list[str]
 
 
+class Queries(BaseModel):
+    queries: list[str]
+
+
+class Pack(BaseModel):
+    grievance: str  # to the insurer's Grievance Redressal Officer
+    bima_bharosa: str  # complaint text for bimabharosa.irdai.gov.in
+    ombudsman: str  # Insurance Ombudsman complaint draft
+
+
 # ---------- Database ----------
 
 
@@ -92,6 +102,7 @@ class Case(Base):
     __tablename__ = "cases"
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    result: Mapped[dict | None] = mapped_column(JSON)  # CaseResult from pipeline/run.py
 
 
 class Document(Base):
@@ -112,6 +123,15 @@ class ClauseRow(Base):
     tag: Mapped[str] = mapped_column(String(32))
     # ponytail: no ANN index (pgvector caps HNSW at 2000 dims); exact scan is fine for one policy per case
     embedding: Mapped[list[float]] = mapped_column(Vector(EMBED_DIM))
+
+
+class Source(Base):
+    __tablename__ = "sources"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    case_id: Mapped[str] = mapped_column(ForeignKey("cases.id", ondelete="CASCADE"), index=True)
+    title: Mapped[str] = mapped_column(Text)
+    url: Mapped[str] = mapped_column(Text)
+    content: Mapped[str] = mapped_column(Text)
 
 
 class LLMCall(Base):
